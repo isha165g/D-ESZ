@@ -108,7 +108,23 @@ export const MapContainer: React.FC<MapContainerProps> = ({
   );
 
   return (
-    <div className="relative flex-1 w-full h-full bg-black">
+    <div className="relative flex-1 w-full h-full bg-[#040504]">
+      {/* Scanner effect line */}
+      <div className="absolute top-[45%] left-0 w-full h-[2px] bg-[#00ff41]/30 shadow-[0_0_12px_#00ff41] z-[1000] pointer-events-none animate-pulse"></div>
+
+      {/* Cyber Emerald HUD Coordinates Overlay */}
+      <div className="absolute top-5 left-5 z-[1000] pointer-events-none font-mono flex flex-col gap-1.5">
+        <div className="bg-black/85 border-l-2 border-[#00ff41] px-3 py-1 text-[11px] text-[#00ff41] font-bold shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+          LAT: 26.5828° N
+        </div>
+        <div className="bg-black/85 border-l-2 border-[#00ff41] px-3 py-1 text-[11px] text-[#00ff41] font-bold shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+          LON: 93.1708° E
+        </div>
+        <div className="bg-black/85 border-l-2 border-[#00ff41] px-3 py-1 text-[11px] text-[#e0f2e0] font-bold shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+          GRID_SECTOR: NH-37_CORRIDOR
+        </div>
+      </div>
+
       <LeafletMap
         center={KAZIRANGA_CENTER}
         zoom={12}
@@ -131,17 +147,17 @@ export const MapContainer: React.FC<MapContainerProps> = ({
             center={STATIC_10KM_CENTER}
             radius={STATIC_10KM_RADIUS_METERS}
             pathOptions={{
-              color: '#ef4444',
+              color: '#ff3e3e',
               weight: 4,
               dashArray: '8, 8',
-              fillColor: '#ef4444',
+              fillColor: '#ff3e3e',
               fillOpacity: 0.15
             }}
           >
             <Popup>
-              <div className="p-2 text-xs font-sans">
-                <strong className="text-red-400 text-sm block mb-1">Static 10 KM Default ESZ Boundary</strong>
-                <p className="text-zinc-300">
+              <div className="p-2 text-xs font-mono">
+                <strong className="text-[#ff3e3e] text-sm block mb-1">Static 10 KM Default ESZ Boundary</strong>
+                <p className="text-[#e0f2e0]/80">
                   Massive rigid 314 sq km circle around Kaziranga Park. Inflexible boundary restricting agriculture and human habitation.
                 </p>
               </div>
@@ -163,9 +179,9 @@ export const MapContainer: React.FC<MapContainerProps> = ({
             }}
           >
             <Popup>
-              <div className="p-2 text-xs font-sans">
+              <div className="p-2 text-xs font-mono">
                 <strong className="text-purple-400 text-sm block mb-1">Static 1 KM Proposed ESZ Boundary</strong>
-                <p className="text-zinc-300">
+                <p className="text-[#e0f2e0]/80">
                   Tight 1.5 km rigid circle (7.1 sq km). Fails to protect migratory herds crossing NH-37 during annual floods.
                 </p>
               </div>
@@ -181,18 +197,18 @@ export const MapContainer: React.FC<MapContainerProps> = ({
               <Polygon
                 positions={amoebaOuterCoords}
                 pathOptions={{
-                  color: '#10b981',
+                  color: '#00ff41',
                   weight: 4,
-                  fillColor: '#10b981',
-                  fillOpacity: 0.18,
+                  fillColor: '#00ff41',
+                  fillOpacity: 0.22,
                   lineCap: 'round',
                   lineJoin: 'round'
                 }}
               >
                 <Popup>
-                  <div className="p-2 text-xs font-sans">
-                    <strong className="text-emerald-400 text-sm block mb-1">D-ESZ Outer Amoeba Boundary</strong>
-                    <p className="text-zinc-300">
+                  <div className="p-2 text-xs font-mono">
+                    <strong className="text-[#00ff41] text-sm block mb-1">D-ESZ Outer Amoeba Boundary</strong>
+                    <p className="text-[#e0f2e0]/80">
                       Dynamic irregular alpha shape hull wrapping active wildlife corridors along NH-37.
                     </p>
                   </div>
@@ -205,11 +221,11 @@ export const MapContainer: React.FC<MapContainerProps> = ({
               <Polygon
                 positions={amoebaYellowCoords}
                 pathOptions={{
-                  color: '#eab308',
+                  color: '#d4af37',
                   weight: 3,
                   dashArray: '5, 5',
-                  fillColor: '#eab308',
-                  fillOpacity: 0.22
+                  fillColor: '#d4af37',
+                  fillOpacity: 0.25
                 }}
               />
             )}
@@ -219,16 +235,16 @@ export const MapContainer: React.FC<MapContainerProps> = ({
               <Polygon
                 positions={amoebaRedCoords}
                 pathOptions={{
-                  color: '#ef4444',
+                  color: '#ff3e3e',
                   weight: 4,
-                  fillColor: '#ef4444',
-                  fillOpacity: 0.35
+                  fillColor: '#ff3e3e',
+                  fillOpacity: 0.4
                 }}
               >
                 <Popup>
-                  <div className="p-2 text-xs font-sans">
-                    <strong className="text-red-400 text-sm block mb-1 font-bold">CORE THREAT SECTOR (RED)</strong>
-                    <p className="text-zinc-300">
+                  <div className="p-2 text-xs font-mono">
+                    <strong className="text-[#ff3e3e] text-sm block mb-1 font-bold">CORE THREAT SECTOR (RED)</strong>
+                    <p className="text-[#e0f2e0]/80">
                       Immediate high-density animal presence & active sensor triggers. Speed limit strictly restricted.
                     </p>
                   </div>
@@ -353,37 +369,37 @@ export const MapContainer: React.FC<MapContainerProps> = ({
         ))}
       </LeafletMap>
 
-      {/* Floating Map Legend Overlay - Bento Box */}
-      <div className="absolute bottom-5 right-5 bg-black border-2 border-white p-3 text-xs text-white z-[1000] font-mono max-w-xs hidden sm:block">
-        <div className="font-bold uppercase tracking-widest text-[11px] text-white mb-2.5 flex items-center justify-between border-b border-white/40 pb-1.5">
-          <span>GIS Legend</span>
-          <span className="text-emerald-400 border border-emerald-400 px-1 text-[10px] font-bold">D-ESZ ACTIVE</span>
+      {/* Floating Map Legend Overlay - Cyber Emerald Bento Box */}
+      <div className="absolute bottom-5 right-5 bg-[#0a0f0a] border-2 border-[#1a2e1a] p-3.5 text-xs text-[#e0f2e0] z-[1000] font-mono max-w-xs hidden sm:block shadow-[0_0_15px_rgba(0,0,0,0.8)]">
+        <div className="font-bold uppercase tracking-widest text-[11px] text-[#00ff41] mb-2.5 flex items-center justify-between border-b border-[#1a2e1a] pb-1.5">
+          <span>GIS_LEGEND</span>
+          <span className="text-black bg-[#00ff41] px-1 text-[9px] font-bold">OPERATIONAL</span>
         </div>
 
         <div className="space-y-2 text-[10px] uppercase font-bold">
           <div className="flex items-center gap-2.5">
-            <span className="w-3.5 h-3.5 border-2 border-white bg-black shrink-0"></span>
-            <span className="text-white">AI Sensor Node</span>
+            <span className="w-3.5 h-3.5 border-2 border-[#00ff41] bg-black shrink-0"></span>
+            <span className="text-[#e0f2e0]">SENSOR_NODE</span>
           </div>
           <div className="flex items-center gap-2.5">
-            <span className="w-3.5 h-3.5 border-2 border-white bg-red-600 animate-pulse shrink-0"></span>
-            <span className="text-red-400">Triggered Sensor</span>
+            <span className="w-3.5 h-3.5 border-2 border-[#ff3e3e] bg-[#ff3e3e] animate-pulse shrink-0"></span>
+            <span className="text-[#ff3e3e]">THREAT_ACTIVE</span>
           </div>
           <div className="flex items-center gap-2.5">
-            <span className="w-4 h-2.5 bg-emerald-500/30 border-2 border-dashed border-emerald-400 shrink-0"></span>
-            <span className="text-emerald-400">D-ESZ Outer Amoeba</span>
+            <span className="w-4 h-2.5 bg-[#00ff41]/20 border-2 border-dashed border-[#00ff41] shrink-0"></span>
+            <span className="text-[#00ff41]">D-ESZ_OUTER_AMOEBA</span>
           </div>
           <div className="flex items-center gap-2.5">
-            <span className="w-4 h-2.5 bg-red-500/50 border-2 border-red-500 shrink-0"></span>
-            <span className="text-red-400">Core Threat Sector</span>
+            <span className="w-4 h-2.5 bg-[#ff3e3e]/40 border-2 border-[#ff3e3e] shrink-0"></span>
+            <span className="text-[#ff3e3e]">CORE_THREAT_SECTOR</span>
           </div>
           <div className="flex items-center gap-2.5">
             <span className="w-4 h-1 bg-cyan-400 shrink-0"></span>
-            <span className="text-cyan-300">NH-37 Active Passages</span>
+            <span className="text-cyan-300">ACTIVE_PASSAGE</span>
           </div>
           <div className="flex items-center gap-2.5">
-            <span className="w-4 h-1 border-b-2 border-dashed border-amber-400 shrink-0"></span>
-            <span className="text-amber-300">Historical Routes</span>
+            <span className="w-4 h-1 border-b-2 border-dashed border-[#d4af37] shrink-0"></span>
+            <span className="text-[#d4af37]">HISTORIC_ROUTE</span>
           </div>
         </div>
       </div>

@@ -1,71 +1,104 @@
 @import "tailwindcss";
 
+:root {
+  --bg: #060806;
+  --ink: #e0f2e0;
+  --accent: #00ff41;
+  --surface: #0a0f0a;
+  --border: #1a2e1a;
+  --red: #ff3e3e;
+  --gold: #d4af37;
+}
+
 @layer base {
   body {
-    background-color: #000000;
-    color: #ffffff;
-    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
     overflow-x: hidden;
   }
 
   code, kbd, samp, pre {
-    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: 'Space Mono', monospace;
   }
 }
 
-/* Custom dark tile styling & solid black map canvas */
+.font-header, .display, .font-display {
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.mono, .font-mono {
+  font-family: 'Space Mono', monospace;
+}
+
+/* Custom bento card styling */
+.bento-card, .card-tech {
+  border-left: 3px solid var(--accent);
+  background: rgba(0, 255, 65, 0.03);
+  padding: 1.25rem;
+  border-radius: 0 4px 4px 0;
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+/* Custom dark tile styling & solid dark map canvas */
 .leaflet-container {
-  background-color: #09090b !important;
-  font-family: 'JetBrains Mono', monospace !important;
+  background-color: #040504 !important;
+  font-family: 'Space Mono', monospace !important;
   width: 100%;
   height: 100%;
 }
 
 /* Ensure clean map tile contrast */
 .leaflet-tile-container img {
-  opacity: 0.95;
+  opacity: 0.85;
 }
 
-/* Custom White Icon styling for Map Markers - Bento Grid style */
+/* Custom Cyber Emerald Marker styling for Map Markers */
 .custom-white-marker {
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 0px;
   background: #000000;
-  border: 2px solid #ffffff;
-  color: #ffffff;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  border: 2px solid #00ff41;
+  color: #00ff41;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
   cursor: pointer;
   transition: transform 0.15s ease, background-color 0.15s ease;
 }
 
 .custom-white-marker:hover {
   transform: scale(1.2);
-  background-color: #ffffff;
+  background-color: #00ff41;
   color: #000000;
   z-index: 9999 !important;
 }
 
 .custom-white-marker.triggered {
-  border-color: #ffffff;
-  background-color: #ffffff;
-  color: #000000;
-  animation: pulse-trigger 1s infinite ease-in-out;
+  border-color: #ff3e3e;
+  background-color: #000000;
+  color: #ff3e3e;
+  box-shadow: 0 0 15px rgba(255, 62, 62, 0.6);
+  animation: pulse-trigger-emerald 1s infinite ease-in-out;
 }
 
-@keyframes pulse-trigger {
+@keyframes pulse-trigger-emerald {
   0% {
     transform: scale(1);
-    box-shadow: 0 0 0px #ffffff;
+    box-shadow: 0 0 0px #ff3e3e;
   }
   50% {
     transform: scale(1.25);
-    box-shadow: 0 0 20px #ffffff;
+    box-shadow: 0 0 20px #ff3e3e;
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0px #ffffff;
+    box-shadow: 0 0 0px #ff3e3e;
   }
 }
 
@@ -75,23 +108,23 @@
   justify-content: center;
   border-radius: 0px;
   background: #000000;
-  border: 2px solid #ffffff;
-  color: #ffffff;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  border: 2px solid #00ff41;
+  color: #00ff41;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
 }
 
-/* Leaflet Popups in Bento Monochrome Theme */
+/* Leaflet Popups in Cyber Emerald Theme */
 .leaflet-popup-content-wrapper {
-  background: #000000 !important;
-  color: #ffffff !important;
-  border: 2px solid #ffffff !important;
+  background: #0a0f0a !important;
+  color: #e0f2e0 !important;
+  border: 2px solid #00ff41 !important;
   border-radius: 0px !important;
-  box-shadow: 6px 6px 0px rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.3) !important;
   padding: 2px !important;
 }
 
 .leaflet-popup-tip {
-  background: #ffffff !important;
+  background: #00ff41 !important;
 }
 
 /* Custom Scrollbars */
@@ -100,14 +133,14 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #000000;
-  border-left: 1px solid #333333;
+  background: #060806;
+  border-left: 1px solid #1a2e1a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #ffffff;
+  background: #00ff41;
   border-radius: 0px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #cccccc;
+  background: #88a888;
 }
 

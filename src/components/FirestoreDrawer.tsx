@@ -21,38 +21,38 @@ export const FirestoreDrawer: React.FC<FirestoreDrawerProps> = ({
 
   return (
     <div className="fixed inset-0 z-[2000] flex justify-end bg-black/80 font-mono">
-      <div className="w-full max-w-xl bg-black border-l-2 border-white text-white h-full flex flex-col">
+      <div className="w-full max-w-xl bg-[#0a0f0a] border-l-2 border-[#00ff41] text-[#e0f2e0] h-full flex flex-col shadow-[-10px_0_30px_rgba(0,0,0,0.9)]">
         {/* Header */}
-        <div className="p-4 border-b-2 border-white flex items-center justify-between bg-black">
+        <div className="p-4 border-b-2 border-[#1a2e1a] flex items-center justify-between bg-[#060806]">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-white text-black border border-white">
+            <div className="p-2 bg-[#00ff41] text-black border border-[#00ff41]">
               <Database className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
-              <h2 className="text-base font-bold uppercase tracking-widest text-white">
-                Cloud Firestore Emulator
+              <h2 className="text-base font-bold uppercase tracking-widest text-[#00ff41]">
+                Cloud Firestore Inspector
               </h2>
-              <p className="text-xs text-gray-400">
-                Project: <span className="text-white font-bold">d-esz-kaziranga-gis</span>
+              <p className="text-xs text-[#88a888]">
+                Project: <span className="text-[#e0f2e0] font-bold">desz-control-center</span>
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 border-2 border-white bg-black hover:bg-white hover:text-black text-white transition-all cursor-pointer"
+            className="p-1.5 border border-[#1a2e1a] bg-black hover:border-[#00ff41] hover:text-[#00ff41] text-[#e0f2e0] transition-all cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Collection Tabs */}
-        <div className="flex border-b-2 border-white bg-black p-2 gap-2 text-xs uppercase font-bold">
+        <div className="flex border-b-2 border-[#1a2e1a] bg-[#060806] p-2 gap-2 text-xs uppercase font-bold overflow-x-auto">
           <button
             onClick={() => setActiveTab('sensor_logs')}
-            className={`px-3 py-2 border-2 transition-all cursor-pointer flex items-center gap-2 ${
+            className={`px-3 py-2 border transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'sensor_logs'
-                ? 'bg-white text-black border-white'
-                : 'bg-black text-gray-400 border-white/40 hover:border-white hover:text-white'
+                ? 'bg-[#00ff41] text-black border-[#00ff41]'
+                : 'bg-black text-[#88a888] border-[#1a2e1a] hover:border-[#00ff41] hover:text-[#e0f2e0]'
             }`}
           >
             <ListFilter className="w-3.5 h-3.5" />
@@ -61,10 +61,10 @@ export const FirestoreDrawer: React.FC<FirestoreDrawerProps> = ({
 
           <button
             onClick={() => setActiveTab('active_threats')}
-            className={`px-3 py-2 border-2 transition-all cursor-pointer flex items-center gap-2 ${
+            className={`px-3 py-2 border transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'active_threats'
-                ? 'bg-white text-black border-white'
-                : 'bg-black text-gray-400 border-white/40 hover:border-white hover:text-white'
+                ? 'bg-[#00ff41] text-black border-[#00ff41]'
+                : 'bg-black text-[#88a888] border-[#1a2e1a] hover:border-[#00ff41] hover:text-[#e0f2e0]'
             }`}
           >
             <ShieldAlert className="w-3.5 h-3.5" />
@@ -73,10 +73,10 @@ export const FirestoreDrawer: React.FC<FirestoreDrawerProps> = ({
 
           <button
             onClick={() => setActiveTab('polygon_vertices')}
-            className={`px-3 py-2 border-2 transition-all cursor-pointer flex items-center gap-2 ${
+            className={`px-3 py-2 border transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'polygon_vertices'
-                ? 'bg-white text-black border-white'
-                : 'bg-black text-gray-400 border-white/40 hover:border-white hover:text-white'
+                ? 'bg-[#00ff41] text-black border-[#00ff41]'
+                : 'bg-black text-[#88a888] border-[#1a2e1a] hover:border-[#00ff41] hover:text-[#e0f2e0]'
             }`}
           >
             <Code className="w-3.5 h-3.5" />
@@ -89,14 +89,14 @@ export const FirestoreDrawer: React.FC<FirestoreDrawerProps> = ({
           {activeTab === 'sensor_logs' && (
             <div className="space-y-3">
               {state.sensor_logs.map((log) => (
-                <div key={log.id} className="p-3 bg-black border-2 border-white space-y-1.5">
+                <div key={log.id} className="p-3 bg-black border border-[#1a2e1a] hover:border-[#00ff41]/50 space-y-1.5 transition-all">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-white font-bold">{log.id}</span>
-                    <span className="text-gray-400">{log.timestamp}</span>
+                    <span className="text-[#00ff41] font-bold">{log.id}</span>
+                    <span className="text-[#88a888]">{log.timestamp}</span>
                   </div>
-                  <div className="text-white font-bold uppercase">{log.detectedObject}</div>
-                  <div className="text-gray-300 text-[11px] uppercase">{log.actionTaken}</div>
-                  <div className="text-gray-400 text-[10px]">
+                  <div className="text-[#e0f2e0] font-bold uppercase">{log.detectedObject}</div>
+                  <div className="text-[#88a888] text-[11px] uppercase">{log.actionTaken}</div>
+                  <div className="text-[#88a888]/80 text-[10px]">
                     Coordinates: [{log.lat}, {log.lng}] | Confidence: {(log.confidence * 100).toFixed(0)}%
                   </div>
                 </div>
@@ -107,30 +107,30 @@ export const FirestoreDrawer: React.FC<FirestoreDrawerProps> = ({
           {activeTab === 'active_threats' && (
             <div className="space-y-3">
               {state.active_threats.length === 0 ? (
-                <div className="text-center py-12 text-gray-500 italic uppercase">
+                <div className="text-center py-12 text-[#88a888] italic uppercase">
                   No active threats logged in Firestore collection.
                 </div>
               ) : (
                 state.active_threats.map((threat) => (
-                  <div key={threat.id} className="p-3.5 bg-black border-2 border-white space-y-2">
+                  <div key={threat.id} className="p-3.5 bg-black border border-[#ff3e3e]/40 space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-white font-bold uppercase">{threat.species} Herd ({threat.count} count)</span>
-                      <span className="px-2 py-0.5 bg-white text-black text-[10px] uppercase font-bold">
+                      <span className="text-[#e0f2e0] font-bold uppercase">{threat.species} Herd ({threat.count} count)</span>
+                      <span className="px-2 py-0.5 bg-[#ff3e3e] text-white text-[10px] uppercase font-bold">
                         {threat.status}
                       </span>
                     </div>
 
-                    <p className="text-gray-300 text-xs uppercase">{threat.locationName}</p>
+                    <p className="text-[#88a888] text-xs uppercase">{threat.locationName}</p>
 
-                    <div className="text-[11px] text-gray-400 uppercase">
-                      SMS Alert Sent To: <span className="text-white font-bold">{threat.smsDispatchedTo.join(', ')}</span>
+                    <div className="text-[11px] text-[#88a888] uppercase">
+                      SMS Alert Sent To: <span className="text-[#00ff41] font-bold">{threat.smsDispatchedTo.join(', ')}</span>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-white/30">
-                      <span className="text-white uppercase">Threat Score: <strong>{threat.threatScore}/100</strong></span>
+                    <div className="flex items-center justify-between pt-2 border-t border-[#1a2e1a]">
+                      <span className="text-[#e0f2e0] uppercase">Threat Score: <strong className="text-[#ff3e3e]">{threat.threatScore}/100</strong></span>
                       <button
                         onClick={() => onClearThreat(threat.id)}
-                        className="px-2.5 py-1 bg-white text-black border border-white hover:bg-black hover:text-white text-[11px] uppercase font-bold flex items-center gap-1 cursor-pointer transition-all"
+                        className="px-2.5 py-1 bg-[#00ff41] text-black border border-[#00ff41] hover:bg-black hover:text-[#00ff41] text-[11px] uppercase font-bold flex items-center gap-1 cursor-pointer transition-all"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         <span>Resolve Threat</span>
@@ -144,12 +144,12 @@ export const FirestoreDrawer: React.FC<FirestoreDrawerProps> = ({
 
           {activeTab === 'polygon_vertices' && (
             <div className="space-y-2">
-              <div className="p-2.5 bg-black border border-white text-gray-200 text-[11px] uppercase">
-                Active Amoeba Geofence Polygon ring computed via <strong>AlphaShape (Concave Hull)</strong> algorithm.
+              <div className="p-2.5 bg-black border border-[#1a2e1a] text-[#88a888] text-[11px] uppercase">
+                Active Amoeba Geofence Polygon ring computed via <strong className="text-[#00ff41]">AlphaShape (Concave Hull)</strong> algorithm.
               </div>
 
-              <div className="bg-black p-3 border-2 border-white max-h-96 overflow-y-auto">
-                <pre className="text-[11px] text-white">
+              <div className="bg-black p-3 border border-[#1a2e1a] max-h-96 overflow-y-auto">
+                <pre className="text-[11px] text-[#00ff41]">
                   {JSON.stringify(state.polygon_vertices, null, 2)}
                 </pre>
               </div>
