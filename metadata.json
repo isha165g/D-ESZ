@@ -1,0 +1,6 @@
+{
+  "name": "Dynamic Corridor Eco-Sensitive Zone (D-ESZ)",
+  "description": "Interactive GIS Control Center for Dynamic Amoeba-like Eco-Sensitive Zone (D-ESZ) monitoring Kaziranga-Bokakhat wildlife corridors.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
