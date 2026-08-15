@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   ESZMode,
   SensorMarker,
@@ -15,6 +15,7 @@ import {
 import { FirebaseService } from './services/FirebaseService';
 import { AIService, ToastAlert } from './services/AIService';
 import { AlphaShapeService } from './services/AlphaShapeService';
+import { HerdSimulationService } from './services/HerdSimulationService';
 
 import { ControlHeader } from './components/ControlHeader';
 import { Sidebar } from './components/Sidebar';
@@ -49,6 +50,10 @@ export default function App() {
 
   const [toast, setToast] = useState<ToastAlert | null>(null);
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
+  const [simulationSpeed, setSimulationSpeed] = useState<number>(1);
+  const [highwayCrossingAlert, setHighwayCrossingAlert] = useState<boolean>(false);
+  const [activeCrossingsCount, setActiveCrossingsCount] = useState<number>(0);
+  const sensorTriggerCooldownRef = useRef<Record<string, number>>({});
 
   // 2. Subscribe to FirebaseService
   useEffect(() => {
@@ -94,39 +99,37 @@ export default function App() {
     }, 6000);
   }, [sensors]);
 
-  // 5. Automated Real-time Elephant Herd Migration Simulation
+  // 5. Automated Real-time Elephant Herd Migration Simulation Loop
   useEffect(() => {
     if (!isSimulating) return;
 
     const interval = setInterval(() => {
-      // Step elephant cluster across NH-37 corridor
-      setClusters((prev) =>
-        prev.map((cluster) => {
-          if (cluster.species === 'Asian Elephant') {
-            // Shift coordinates slightly south towards Karbi Anglong
-            const dLat = (Math.random() - 0.5) * 0.003;
-            const dLng = (Math.random() - 0.5) * 0.004;
-            return {
-              ...cluster,
-              lat: cluster.lat + dLat,
-              lng: cluster.lng + dLng,
-              threatScore: Math.min(98, cluster.threatScore + 2),
-              count: cluster.count + (Math.random() > 0.7 ? 1 : 0)
-            };
-          }
-          return cluster;
-        })
-      );
+      setClusters((prevClusters) => {
+        const stepResult = HerdSimulationService.stepSimulation(
+          prevClusters,
+          sensors,
+          simulationSpeed
+        );
 
-      // Randomly trigger nearest sensor
-      const randomSensor = sensors[Math.floor(Math.random() * sensors.length)];
-      if (randomSensor) {
-        handleTriggerSensorEvent(randomSensor.id);
-      }
-    }, 3500);
+        setHighwayCrossingAlert(stepResult.highwayCrossingAlert);
+        setActiveCrossingsCount(stepResult.activeCrossingsCount);
+
+        // Check and trigger proximity sensors
+        const now = Date.now();
+        stepResult.triggeredSensorIds.forEach((sensorId) => {
+          const lastTime = sensorTriggerCooldownRef.current[sensorId] || 0;
+          if (now - lastTime > 12000) {
+            sensorTriggerCooldownRef.current[sensorId] = now;
+            handleTriggerSensorEvent(sensorId);
+          }
+        });
+
+        return stepResult.updatedClusters;
+      });
+    }, 250);
 
     return () => clearInterval(interval);
-  }, [isSimulating, sensors, handleTriggerSensorEvent]);
+  }, [isSimulating, sensors, simulationSpeed, handleTriggerSensorEvent]);
 
   // 6. Gemini AI Policy Evaluation Trigger
   const handleEvaluateAIPolicy = async () => {
@@ -144,10 +147,13 @@ export default function App() {
     setIsAILoading(false);
   };
 
-  // 7. Reset Threats
+  // 7. Reset Threats & Reset Herd Migration Positions
   const handleResetThreats = () => {
     setSensors(INITIAL_SENSORS);
-    setClusters(INITIAL_ANIMAL_CLUSTERS);
+    setClusters(HerdSimulationService.resetClusters());
+    setHighwayCrossingAlert(false);
+    setActiveCrossingsCount(0);
+    sensorTriggerCooldownRef.current = {};
     FirebaseService.getInstance().resetAll();
     setToast(null);
   };
@@ -160,7 +166,9 @@ export default function App() {
         activeThreatsCount={firestoreState.active_threats.length}
         totalAreaSqKm={amoebaResult.totalAreaSqKm}
         isSimulating={isSimulating}
+        simulationSpeed={simulationSpeed}
         onToggleSimulation={() => setIsSimulating(!isSimulating)}
+        onSetSimulationSpeed={setSimulationSpeed}
         onResetThreats={handleResetThreats}
         onOpenFirestore={() => setIsFirestoreOpen(true)}
         onOpenAIReport={handleEvaluateAIPolicy}
@@ -194,6 +202,13 @@ export default function App() {
           showHistoricalPathways={showHistoricalPathways}
           sensorFilter={sensorFilter}
           onSensorClick={(sensor) => handleTriggerSensorEvent(sensor.id)}
+          isSimulating={isSimulating}
+          simulationSpeed={simulationSpeed}
+          onToggleSimulation={() => setIsSimulating(!isSimulating)}
+          onSetSimulationSpeed={setSimulationSpeed}
+          onResetSimulation={handleResetThreats}
+          highwayCrossingAlert={highwayCrossingAlert}
+          activeCrossingsCount={activeCrossingsCount}
         />
       </div>
 

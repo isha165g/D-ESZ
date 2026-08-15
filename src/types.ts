@@ -34,6 +34,12 @@ export interface AnimalCluster {
   isHistoricalPath: boolean;
   isActivePath: boolean;
   timestamp: string;
+  trail?: [number, number][]; // Breadcrumb path of recent coordinates
+  status?: 'grazing' | 'migrating' | 'crossing_highway' | 'ascending_hills';
+  targetIndex?: number;
+  direction?: 'southbound' | 'northbound';
+  progress?: number; // 0 to 1 between waypoints
+  pathCoordinates?: [number, number][];
 }
 
 export interface CorridorPathway {

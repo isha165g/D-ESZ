@@ -39,6 +39,13 @@ interface MapContainerProps {
   showHistoricalPathways: boolean;
   sensorFilter: SensorType | 'all';
   onSensorClick: (sensor: SensorTypeMarker) => void;
+  isSimulating?: boolean;
+  simulationSpeed?: number;
+  onToggleSimulation?: () => void;
+  onSetSimulationSpeed?: (speed: number) => void;
+  onResetSimulation?: () => void;
+  highwayCrossingAlert?: boolean;
+  activeCrossingsCount?: number;
 }
 
 // Custom White Icon Builder for Leaflet
@@ -63,20 +70,80 @@ function createWhiteSensorIcon(type: SensorType, isTriggered: boolean) {
   });
 }
 
-function createAnimalIcon(species: string, count: number, threatScore: number) {
-  const isHighRisk = threatScore > 75;
+function createAnimalIcon(cluster: AnimalCluster, isSimulating: boolean) {
+  const isHighRisk = cluster.threatScore > 75 || cluster.status === 'crossing_highway';
+  const isCrossing = cluster.status === 'crossing_highway';
+  const isElephant = cluster.species === 'Asian Elephant';
+  const heading = cluster.movementVector.angle;
+
   const htmlString = renderToString(
-    <div className={`custom-animal-marker w-10 h-10 ${isHighRisk ? 'border-red-500 bg-red-950/90 shadow-[0_0_15px_#ef4444]' : 'border-amber-400 bg-zinc-900 shadow-[0_0_12px_#fbbf24]'}`}>
-      <span className="font-mono font-black text-xs text-white">{count}</span>
+    <div className="herd-marker-wrapper group">
+      {/* Expanding Sonar Pulse Waves when moving */}
+      {(isSimulating || isCrossing) && (
+        <div className={`herd-radar-pulse ${isCrossing || isHighRisk ? 'critical' : ''}`} />
+      )}
+
+      {/* Dispersed satellite herd member dots for elephant herds */}
+      {isElephant && isSimulating && (
+        <>
+          <div className="herd-satellite-dot" style={{ top: '4px', left: '6px', animationDelay: '0.2s' }} />
+          <div className="herd-satellite-dot" style={{ bottom: '6px', right: '4px', animationDelay: '0.6s' }} />
+          <div className="herd-satellite-dot" style={{ top: '10px', right: '6px', animationDelay: '1.1s' }} />
+        </>
+      )}
+
+      {/* Main Core Animal Marker */}
+      <div
+        className={`w-11 h-11 flex flex-col items-center justify-center border-2 transition-all relative z-10 ${
+          isCrossing
+            ? 'bg-red-950/95 border-red-500 text-white shadow-[0_0_18px_rgba(239,68,68,0.9)] animate-pulse'
+            : isHighRisk
+            ? 'bg-zinc-950 border-[#00ff41] text-[#00ff41] shadow-[0_0_14px_rgba(0,255,65,0.7)]'
+            : 'bg-zinc-950 border-[#00ff41] text-[#00ff41] shadow-[0_0_10px_rgba(0,255,65,0.4)]'
+        }`}
+      >
+        {/* Dynamic Heading Direction Arrow Pointer */}
+        <div
+          className="absolute -top-3 left-1/2 -translate-x-1/2 w-0 h-0 transition-transform duration-200"
+          style={{
+            transform: `translateX(-50%) rotate(${heading}deg)`,
+            transformOrigin: 'bottom center'
+          }}
+        >
+          <div className={`w-2.5 h-2.5 ${isCrossing ? 'bg-red-500' : 'bg-[#00ff41]'} clip-triangle shadow-[0_0_6px_currentColor]`}></div>
+        </div>
+
+        {/* Species & Headcount */}
+        <div className="flex items-center justify-center gap-0.5 leading-none">
+          <span className="text-xs font-bold">{isElephant ? '🐘' : cluster.species === 'One-Horned Rhino' ? '🦏' : cluster.species === 'Royal Bengal Tiger' ? '🐅' : '🦌'}</span>
+          <span className="font-mono font-black text-[11px] tracking-tight">{cluster.count}</span>
+        </div>
+
+        {/* Live Speed Tag */}
+        <span className={`text-[8px] font-mono font-bold leading-none mt-0.5 ${isCrossing ? 'text-red-300' : 'text-[#88a888]'}`}>
+          {cluster.movementVector.speedKmH}k
+        </span>
+      </div>
+
+      {/* Floating Status Tag over the Moving Herd */}
+      {isSimulating && (
+        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black/90 border border-current px-1.5 py-0.5 text-[8px] font-mono font-bold tracking-tight shadow-md z-20 pointer-events-none">
+          {isCrossing ? (
+            <span className="text-red-400 animate-pulse">⚠️ CROSSING NH-37</span>
+          ) : (
+            <span className="text-[#00ff41]">{cluster.species.toUpperCase()} ➔ {cluster.corridorName.split(' ')[0]}</span>
+          )}
+        </div>
+      )}
     </div>
   );
 
   return L.divIcon({
     html: htmlString,
     className: 'custom-leaflet-icon',
-    iconSize: [40, 40],
-    iconAnchor: [20, 20],
-    popupAnchor: [0, -22]
+    iconSize: [48, 48],
+    iconAnchor: [24, 24],
+    popupAnchor: [0, -26]
   });
 }
 
@@ -100,7 +167,14 @@ export const MapContainer: React.FC<MapContainerProps> = ({
   showActivePathways,
   showHistoricalPathways,
   sensorFilter,
-  onSensorClick
+  onSensorClick,
+  isSimulating = false,
+  simulationSpeed = 1,
+  onToggleSimulation,
+  onSetSimulationSpeed,
+  onResetSimulation,
+  highwayCrossingAlert = false,
+  activeCrossingsCount = 0
 }) => {
   // Filter sensors
   const filteredSensors = sensors.filter(
@@ -124,6 +198,17 @@ export const MapContainer: React.FC<MapContainerProps> = ({
           GRID_SECTOR: NH-37_CORRIDOR
         </div>
       </div>
+
+      {/* Highway Crossing Warning Banner */}
+      {highwayCrossingAlert && (
+        <div className="absolute top-5 right-5 z-[1000] font-mono max-w-sm bg-red-950/90 backdrop-blur-md border-2 border-red-600 p-2.5 text-white flex items-center gap-2 shadow-[0_0_15px_rgba(239,68,68,0.7)] animate-pulse">
+          <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
+          <div className="text-[10px] font-mono leading-tight">
+            <strong className="text-red-300 block font-bold uppercase">AUTOMATED HIGHWAY ALERT</strong>
+            <span>HERD CROSSING NH-37 // SPEED RESTRICTED TO 20 KM/H</span>
+          </div>
+        </div>
+      )}
 
       <LeafletMap
         center={KAZIRANGA_CENTER}
@@ -289,6 +374,45 @@ export const MapContainer: React.FC<MapContainerProps> = ({
           );
         })}
 
+        {/* Dynamic Migration Trail Polylines behind moving herds */}
+        {clusters.map((cluster) => {
+          if (!cluster.trail || cluster.trail.length < 2) return null;
+          const isElephant = cluster.species === 'Asian Elephant';
+          const isCrossing = cluster.status === 'crossing_highway';
+
+          return (
+            <Polyline
+              key={`trail-${cluster.id}`}
+              positions={cluster.trail}
+              pathOptions={{
+                color: isCrossing ? '#ff3e3e' : isElephant ? '#00ff41' : '#06b6d4',
+                weight: isElephant ? 4 : 3,
+                opacity: 0.8,
+                dashArray: '6, 8',
+                className: 'migration-trail'
+              }}
+            />
+          );
+        })}
+
+        {/* Forward Projected Path when simulation is active */}
+        {isSimulating &&
+          clusters.map((cluster) => {
+            if (!cluster.pathCoordinates || cluster.pathCoordinates.length < 2) return null;
+            return (
+              <Polyline
+                key={`forward-${cluster.id}`}
+                positions={cluster.pathCoordinates}
+                pathOptions={{
+                  color: '#00ff41',
+                  weight: 1.5,
+                  opacity: 0.3,
+                  dashArray: '4, 6'
+                }}
+              />
+            );
+          })}
+
         {/* AI Camera Traps / Acoustic / Seismic Sensor Markers */}
         {filteredSensors.map((sensor) => (
           <Marker
@@ -348,21 +472,55 @@ export const MapContainer: React.FC<MapContainerProps> = ({
           <Marker
             key={cluster.id}
             position={[cluster.lat, cluster.lng]}
-            icon={createAnimalIcon(cluster.species, cluster.count, cluster.threatScore)}
+            icon={createAnimalIcon(cluster, isSimulating)}
           >
             <Popup>
-              <div className="p-2 text-xs font-sans">
-                <div className="flex items-center gap-1.5 mb-1 text-amber-400 font-bold text-sm">
-                  <ShieldAlert className="w-4 h-4" />
-                  <span>{cluster.species} Cluster</span>
+              <div className="p-2.5 text-xs font-sans min-w-[210px]">
+                <div className="flex items-center justify-between gap-1.5 mb-2 border-b border-zinc-800 pb-1.5">
+                  <div className="flex items-center gap-1.5 text-white font-bold text-sm">
+                    <ShieldAlert className="w-4 h-4 text-[#00ff41]" />
+                    <span>{cluster.species} Herd</span>
+                  </div>
+                  <span
+                    className={`px-1.5 py-0.5 font-mono text-[9px] font-bold ${
+                      cluster.status === 'crossing_highway'
+                        ? 'bg-red-950 text-red-400 border border-red-700 animate-pulse'
+                        : 'bg-zinc-900 text-[#00ff41] border border-[#00ff41]/50'
+                    }`}
+                  >
+                    {cluster.status ? cluster.status.toUpperCase().replace('_', ' ') : 'TRACKING'}
+                  </span>
                 </div>
-                <div className="space-y-1 font-mono text-[11px] bg-zinc-950 p-2 rounded border border-zinc-800 text-zinc-300">
-                  <div>Count: <strong className="text-white">{cluster.count} animals</strong></div>
-                  <div>Density: <strong className="text-emerald-400">{cluster.density}%</strong></div>
-                  <div>Threat Score: <strong className="text-red-400">{cluster.threatScore}/100</strong></div>
-                  <div>Heading: <strong className="text-cyan-300">{cluster.movementVector.angle}° ({cluster.movementVector.speedKmH} km/h)</strong></div>
-                  <div>Location: <strong className="text-zinc-300">{cluster.corridorName}</strong></div>
+
+                <div className="space-y-1.5 font-mono text-[11px] bg-zinc-950 p-2 rounded border border-zinc-800 text-zinc-300">
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Herd Count:</span>
+                    <strong className="text-white font-bold">{cluster.count} Animals</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Live Velocity:</span>
+                    <strong className="text-cyan-300 font-bold">
+                      {cluster.movementVector.speedKmH} km/h ({cluster.movementVector.angle}°)
+                    </strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Threat Index:</span>
+                    <strong className={cluster.threatScore > 75 ? 'text-red-400 font-bold' : 'text-[#00ff41] font-bold'}>
+                      {cluster.threatScore}/100
+                    </strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Corridor Sector:</span>
+                    <strong className="text-zinc-200">{cluster.corridorName}</strong>
+                  </div>
                 </div>
+
+                {cluster.status === 'crossing_highway' && (
+                  <div className="mt-2 p-1.5 bg-red-950/80 border border-red-700 text-red-300 text-[10px] font-mono font-bold flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0 text-red-400" />
+                    <span>NH-37 HIGHWAY CROSSING IN PROGRESS // SPEED LIMIT 20 KM/H</span>
+                  </div>
+                )}
               </div>
             </Popup>
           </Marker>
@@ -400,6 +558,10 @@ export const MapContainer: React.FC<MapContainerProps> = ({
           <div className="flex items-center gap-2.5">
             <span className="w-4 h-1 border-b-2 border-dashed border-[#d4af37] shrink-0"></span>
             <span className="text-[#d4af37]">HISTORIC_ROUTE</span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <span className="w-4 h-1 border-b-2 border-dashed border-[#00ff41] shrink-0"></span>
+            <span className="text-[#00ff41]">LIVE_HERD_TRAIL</span>
           </div>
         </div>
       </div>

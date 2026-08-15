@@ -137,71 +137,149 @@ export const INITIAL_ANIMAL_CLUSTERS: AnimalCluster[] = [
     id: 'cluster-ele-01',
     species: 'Asian Elephant',
     count: 18,
-    lat: 26.602,
-    lng: 93.470,
+    lat: 26.618,
+    lng: 93.468,
     density: 88,
     threatScore: 85,
-    movementVector: { angle: 195, speedKmH: 4.5 },
+    movementVector: { angle: 165, speedKmH: 4.8 },
     corridorName: 'Panbari Corridor',
     isHistoricalPath: true,
     isActivePath: true,
-    timestamp: 'Just now'
-  },
-  {
-    id: 'cluster-rhi-01',
-    species: 'One-Horned Rhino',
-    count: 4,
-    lat: 26.570,
-    lng: 93.315,
-    density: 65,
-    threatScore: 70,
-    movementVector: { angle: 180, speedKmH: 2.1 },
-    corridorName: 'Haldibhari Corridor',
-    isHistoricalPath: true,
-    isActivePath: true,
-    timestamp: '2 mins ago'
-  },
-  {
-    id: 'cluster-tig-01',
-    species: 'Royal Bengal Tiger',
-    count: 2,
-    lat: 26.580,
-    lng: 93.362,
-    density: 45,
-    threatScore: 60,
-    movementVector: { angle: 120, speedKmH: 5.0 },
-    corridorName: 'Amguri Corridor',
-    isHistoricalPath: true,
-    isActivePath: false,
-    timestamp: '12 mins ago'
+    timestamp: 'Live GPS',
+    status: 'migrating',
+    targetIndex: 0,
+    direction: 'southbound',
+    progress: 0.1,
+    trail: [
+      [26.626, 93.462],
+      [26.622, 93.465],
+      [26.618, 93.468]
+    ],
+    pathCoordinates: [
+      [26.628, 93.460], // Floodplain North
+      [26.615, 93.468], // Approaching NH-37
+      [26.604, 93.473], // NH-37 Panbari Crossing (Sensors)
+      [26.588, 93.481], // Panbari Reserve Forest Buffer
+      [26.570, 93.490], // Karbi Anglong High Elevation Refuge
+      [26.558, 93.498]  // Southern Sanctuary Hills
+    ]
   },
   {
     id: 'cluster-ele-02',
     species: 'Asian Elephant',
     count: 24,
-    lat: 26.536,
-    lng: 93.218,
+    lat: 26.556,
+    lng: 93.208,
     density: 92,
     threatScore: 90,
-    movementVector: { angle: 210, speedKmH: 6.0 },
+    movementVector: { angle: 145, speedKmH: 5.5 },
     corridorName: 'Kanchanjuri Corridor',
     isHistoricalPath: true,
     isActivePath: true,
-    timestamp: 'Just now'
+    timestamp: 'Live GPS',
+    status: 'migrating',
+    targetIndex: 0,
+    direction: 'southbound',
+    progress: 0.15,
+    trail: [
+      [26.564, 93.200],
+      [26.560, 93.204],
+      [26.556, 93.208]
+    ],
+    pathCoordinates: [
+      [26.568, 93.195], // Kuthori lowlands
+      [26.552, 93.210], // Kanchanjuri approach
+      [26.538, 93.220], // NH-37 Highway Crossing Pass
+      [26.520, 93.232], // Tea Estate Ascent
+      [26.502, 93.245]  // Karbi Hills Peak
+    ]
+  },
+  {
+    id: 'cluster-rhi-01',
+    species: 'One-Horned Rhino',
+    count: 4,
+    lat: 26.582,
+    lng: 93.305,
+    density: 65,
+    threatScore: 72,
+    movementVector: { angle: 150, speedKmH: 2.8 },
+    corridorName: 'Haldibhari Corridor',
+    isHistoricalPath: true,
+    isActivePath: true,
+    timestamp: 'Live GPS',
+    status: 'grazing',
+    targetIndex: 0,
+    direction: 'southbound',
+    progress: 0.2,
+    trail: [
+      [26.588, 93.300],
+      [26.582, 93.305]
+    ],
+    pathCoordinates: [
+      [26.592, 93.298], // Wetland marsh
+      [26.578, 93.307], // Haldibhari marsh edge
+      [26.568, 93.312], // NH-37 Crossing & Seismic Array
+      [26.550, 93.320], // Karbi foothills
+      [26.535, 93.328]
+    ]
+  },
+  {
+    id: 'cluster-tig-01',
+    species: 'Royal Bengal Tiger',
+    count: 2,
+    lat: 26.590,
+    lng: 93.355,
+    density: 45,
+    threatScore: 60,
+    movementVector: { angle: 135, speedKmH: 4.2 },
+    corridorName: 'Amguri Corridor',
+    isHistoricalPath: true,
+    isActivePath: false,
+    timestamp: 'Patrol Track',
+    status: 'migrating',
+    targetIndex: 0,
+    direction: 'southbound',
+    progress: 0.05,
+    trail: [
+      [26.595, 93.350],
+      [26.590, 93.355]
+    ],
+    pathCoordinates: [
+      [26.602, 93.345],
+      [26.588, 93.358],
+      [26.578, 93.365],
+      [26.562, 93.376],
+      [26.548, 93.388]
+    ]
   },
   {
     id: 'cluster-dee-01',
     species: 'Swamp Deer',
     count: 35,
-    lat: 26.618,
-    lng: 93.565,
+    lat: 26.630,
+    lng: 93.560,
     density: 55,
-    threatScore: 35,
-    movementVector: { angle: 90, speedKmH: 3.0 },
+    threatScore: 38,
+    movementVector: { angle: 140, speedKmH: 3.5 },
     corridorName: 'Bokakhat Corridor',
     isHistoricalPath: false,
     isActivePath: true,
-    timestamp: '25 mins ago'
+    timestamp: 'Herd Beacon',
+    status: 'grazing',
+    targetIndex: 0,
+    direction: 'southbound',
+    progress: 0.1,
+    trail: [
+      [26.638, 93.552],
+      [26.630, 93.560]
+    ],
+    pathCoordinates: [
+      [26.640, 93.550],
+      [26.622, 93.565],
+      [26.605, 93.578],
+      [26.588, 93.590],
+      [26.572, 93.602]
+    ]
   }
 ];
 

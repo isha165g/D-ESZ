@@ -7,7 +7,6 @@ import {
   Volume2,
   Activity,
   Zap,
-  Info,
   ChevronRight,
   ShieldAlert,
   MapPin
@@ -282,13 +281,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </section>
 
-      {/* Legend Info Box */}
-      <div className="p-3 border border-[#1a2e1a] bg-[#060806] text-[10px] text-[#88a888] flex items-start gap-2 uppercase font-mono">
-        <Info className="w-4 h-4 text-[#00ff41] shrink-0 mt-0.5" />
-        <p className="leading-snug">
-          <strong className="text-[#00ff41]">NOTE:</strong> CYBER EMERALD STARK BOUNDARIES MAXIMIZE VISIBILITY ON HIGH-RESOLUTION GIS MAPS.
-        </p>
-      </div>
     </aside>
   );
 };

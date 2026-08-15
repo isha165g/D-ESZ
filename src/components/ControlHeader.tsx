@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Radio, AlertTriangle, Cpu, Database, Play, RefreshCw, Activity } from 'lucide-react';
+import { Shield, Radio, AlertTriangle, Cpu, Database, Play, Pause, RefreshCw, Activity } from 'lucide-react';
 import { ESZMode } from '../types';
 
 interface ControlHeaderProps {
@@ -7,7 +7,9 @@ interface ControlHeaderProps {
   activeThreatsCount: number;
   totalAreaSqKm: number;
   isSimulating: boolean;
+  simulationSpeed: number;
   onToggleSimulation: () => void;
+  onSetSimulationSpeed: (speed: number) => void;
   onResetThreats: () => void;
   onOpenFirestore: () => void;
   onOpenAIReport: () => void;
@@ -18,7 +20,9 @@ export const ControlHeader: React.FC<ControlHeaderProps> = ({
   activeThreatsCount,
   totalAreaSqKm,
   isSimulating,
+  simulationSpeed,
   onToggleSimulation,
+  onSetSimulationSpeed,
   onResetThreats,
   onOpenFirestore,
   onOpenAIReport
@@ -84,25 +88,47 @@ export const ControlHeader: React.FC<ControlHeaderProps> = ({
 
       {/* Action Controls - Cyber Emerald Buttons */}
       <div className="flex items-center space-x-2">
-        {/* Simulation toggle */}
-        <button
-          onClick={onToggleSimulation}
-          className={`px-3 py-1.5 border border-[#00ff41] font-header font-bold text-xs uppercase tracking-wider flex items-center space-x-1.5 transition-all cursor-pointer ${
-            isSimulating
-              ? 'bg-[#00ff41] text-black'
-              : 'bg-black text-[#00ff41] hover:bg-[#00ff41] hover:text-black'
-          }`}
-          title="Simulate Real-time Elephant Herd Migration"
-        >
-          <Play className="w-3.5 h-3.5" />
-          <span>{isSimulating ? 'PAUSE HERD' : 'SIMULATE HERD'}</span>
-        </button>
+        {/* Simulation toggle & Speed controls */}
+        <div className="flex flex-col items-stretch gap-1">
+          <button
+            onClick={onToggleSimulation}
+            className={`px-3 py-1.5 border border-[#00ff41] font-header font-bold text-xs uppercase tracking-wider flex items-center justify-center space-x-1.5 transition-all cursor-pointer w-full ${
+              isSimulating
+                ? 'bg-[#00ff41] text-black shadow-[0_0_12px_rgba(0,255,65,0.6)] animate-pulse'
+                : 'bg-black text-[#00ff41] hover:bg-[#00ff41] hover:text-black'
+            }`}
+            title="Simulate Real-time Elephant Herd Migration"
+          >
+            {isSimulating ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+            <span>{isSimulating ? 'PAUSE HERD' : 'SIMULATE HERD'}</span>
+          </button>
+
+          {/* Speed Toggles under Simulate Herd */}
+          <div className="flex items-center justify-between gap-1 bg-black/90 px-1 py-0.5 border border-[#1a2e1a]">
+            <span className="text-[8px] font-mono text-[#88a888] uppercase tracking-tighter mr-0.5">SPD:</span>
+            {[1, 2, 4].map((spd) => (
+              <button
+                key={spd}
+                type="button"
+                onClick={() => onSetSimulationSpeed(spd)}
+                className={`px-1.5 py-0.5 text-[8px] font-mono font-bold border transition-all cursor-pointer ${
+                  simulationSpeed === spd
+                    ? 'bg-[#00ff41] text-black border-[#00ff41] font-black'
+                    : 'bg-black text-[#88a888] border-[#1a2e1a] hover:border-[#00ff41] hover:text-[#00ff41]'
+                }`}
+                title={`Set simulation speed to ${spd}x`}
+              >
+                {spd}X
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Reset Threats */}
         <button
           onClick={onResetThreats}
-          className="p-1.5 border border-[#1a2e1a] bg-black hover:border-[#00ff41] text-[#00ff41] transition-all cursor-pointer"
-          title="Clear Active Threat Triggers"
+          className="p-1.5 border border-[#1a2e1a] bg-black hover:border-[#00ff41] text-[#00ff41] transition-all cursor-pointer self-start h-[31px] flex items-center justify-center"
+          title="Reset Herd Positions & Active Threat Triggers"
         >
           <RefreshCw className="w-4 h-4" />
         </button>
@@ -110,7 +136,7 @@ export const ControlHeader: React.FC<ControlHeaderProps> = ({
         {/* Firestore DB Inspector */}
         <button
           onClick={onOpenFirestore}
-          className="px-3 py-1.5 border border-[#1a2e1a] hover:border-[#00ff41] bg-black text-[#e0f2e0] hover:text-[#00ff41] font-header font-bold text-xs uppercase tracking-wider flex items-center space-x-1.5 transition-all cursor-pointer"
+          className="px-3 py-1.5 border border-[#1a2e1a] hover:border-[#00ff41] bg-black text-[#e0f2e0] hover:text-[#00ff41] font-header font-bold text-xs uppercase tracking-wider flex items-center space-x-1.5 transition-all cursor-pointer self-start h-[31px]"
         >
           <Database className="w-3.5 h-3.5 text-[#00ff41]" />
           <span>FIRESTORE DB</span>
@@ -119,7 +145,7 @@ export const ControlHeader: React.FC<ControlHeaderProps> = ({
         {/* Gemini AI Policy Report */}
         <button
           onClick={onOpenAIReport}
-          className="px-3 py-1.5 bg-[#00ff41] text-black font-header font-bold text-xs uppercase tracking-wider flex items-center space-x-1.5 hover:bg-[#00e038] transition-all cursor-pointer shadow-[0_0_10px_rgba(0,255,65,0.3)]"
+          className="px-3 py-1.5 bg-[#00ff41] text-black font-header font-bold text-xs uppercase tracking-wider flex items-center space-x-1.5 hover:bg-[#00e038] transition-all cursor-pointer shadow-[0_0_10px_rgba(0,255,65,0.3)] self-start h-[31px]"
         >
           <Cpu className="w-3.5 h-3.5" />
           <span>AI_GEMINI</span>

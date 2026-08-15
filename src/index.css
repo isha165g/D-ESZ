@@ -111,6 +111,108 @@
   border: 2px solid #00ff41;
   color: #00ff41;
   box-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
+  position: relative;
+}
+
+/* Moving Herd Radar Waves & Markers */
+.herd-marker-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+}
+
+.herd-radar-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #00ff41;
+  opacity: 0.8;
+  animation: herd-sonar-wave 2s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
+  pointer-events: none;
+}
+
+.herd-radar-pulse.critical {
+  border-color: #ff3e3e;
+  animation: herd-sonar-wave-critical 1.4s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
+}
+
+@keyframes herd-sonar-wave {
+  0% {
+    width: 24px;
+    height: 24px;
+    opacity: 0.9;
+    box-shadow: 0 0 0px #00ff41;
+  }
+  70% {
+    width: 64px;
+    height: 64px;
+    opacity: 0.25;
+    box-shadow: 0 0 15px #00ff41;
+  }
+  100% {
+    width: 76px;
+    height: 76px;
+    opacity: 0;
+  }
+}
+
+@keyframes herd-sonar-wave-critical {
+  0% {
+    width: 24px;
+    height: 24px;
+    opacity: 1;
+    box-shadow: 0 0 0px #ff3e3e;
+  }
+  70% {
+    width: 72px;
+    height: 72px;
+    opacity: 0.35;
+    box-shadow: 0 0 20px #ff3e3e;
+  }
+  100% {
+    width: 86px;
+    height: 86px;
+    opacity: 0;
+  }
+}
+
+.herd-satellite-dot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background-color: #00ff41;
+  border-radius: 50%;
+  box-shadow: 0 0 4px #00ff41;
+  animation: orbit-jitter 3s infinite ease-in-out;
+}
+
+@keyframes orbit-jitter {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(4px, -3px);
+  }
+}
+
+/* Animated moving dash on path polyline */
+.leaflet-interactive.migration-trail {
+  stroke-dasharray: 8, 8;
+  animation: dash-flow 1.2s linear infinite;
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -16;
+  }
 }
 
 /* Leaflet Popups in Cyber Emerald Theme */
